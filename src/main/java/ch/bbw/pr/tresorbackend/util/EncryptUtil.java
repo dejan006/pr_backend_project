@@ -4,25 +4,24 @@ import org.jasypt.util.text.AES256TextEncryptor;
 
 /**
  * EncryptUtil
- * Used to encrypt content.
- * Not implemented yet.
+ * Encrypts and decrypts content using Jasypt (AES 256).
+ * Key is user-specific (e.g. passwordHash).
  * @author Peter Rutschmann
  */
 public class EncryptUtil {
 
-   //todo ergänzen!
+    private final AES256TextEncryptor textEncryptor;
 
-   public EncryptUtil(String secretKey) {
-      //todo ergänzen!
-   }
+    public EncryptUtil(String secretKey) {
+        this.textEncryptor = new AES256TextEncryptor();
+        this.textEncryptor.setPassword(secretKey); // Verwende PasswortHash oder benutzerabhängigen Key
+    }
 
-   public String encrypt(String data) {
-      //todo anpassen!
-      return data;
-   }
+    public String encrypt(String data) {
+        return textEncryptor.encrypt(data);
+    }
 
-   public String decrypt(String data) {
-      //todo anpassen!
-      return data;
-   }
+    public String decrypt(String data) {
+        return textEncryptor.decrypt(data);
+    }
 }
