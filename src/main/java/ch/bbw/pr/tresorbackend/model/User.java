@@ -37,6 +37,8 @@ public class User {
 
    private String salt;
 
+   private String pepper;
+
    public User(Long id, String firstName, String lastName, String email, String passwordHash) { 
       this.id = id;
       this.firstName = firstName;

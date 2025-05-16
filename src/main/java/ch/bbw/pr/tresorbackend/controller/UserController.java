@@ -81,15 +81,18 @@ public class UserController {
       System.out.println("UserController.createUser, password validation passed");
 
       //transform registerUser to user
+      String salt = passwordService.generateSalt();
+      String pepper = passwordService.generatePepper();
+      String hashedPassword = passwordService.hashPassword(registerUser.getPassword(), salt, pepper);
+
       User user = new User(
             null,
             registerUser.getFirstName(),
             registerUser.getLastName(),
             registerUser.getEmail(),
-            passwordService.hashPassword(registerUser.getPassword())
-            );
-
-      User savedUser = userService.createUser(user);
+            hashedPassword
+      );
+      user.setSalt(salt);
 
       System.out.println("UserController.createUser, user saved in db");
       JsonObject obj = new JsonObject();
