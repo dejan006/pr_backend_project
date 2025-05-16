@@ -36,7 +36,9 @@ Die bestehende Tresor-Applikation wurde um Sicherheitsmechanismen erweitert. Zie
 4. SHA-256 Hash wird berechnet
 5. Base64-Hash + Salt werden in DB gespeichert
 
-![Passwort-Hashing in UserServiceImpl.java](../images/screenshot2.png)
+![Passwort-Hashing in UserServiceImpl.java](../images/pw1.png)
+![Passwort-Hashing in UserServiceImpl.java](../images/pw2.png)
+![Passwort-Hashing in UserServiceImpl.java](../images/pw3.png)
 
 ### AES Secret Encryption
 
@@ -49,6 +51,8 @@ Die bestehende Tresor-Applikation wurde um Sicherheitsmechanismen erweitert. Zie
 5. Beim Abrufen wird es mit dem gleichen Key wieder entschlüsselt
 
 ![Secret Encryption & Decryption](../images/screenshot1.png)
+![Secret Encryption & Decryption](../images/secret3.png)
+![Secret Encryption & Decryption](../images/secret2.png)
 
 
 ### Risiken und Schutzmassnahmen

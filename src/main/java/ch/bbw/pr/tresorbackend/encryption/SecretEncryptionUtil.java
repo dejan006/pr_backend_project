@@ -16,7 +16,7 @@ public class SecretEncryptionUtil {
         return new SecretKeySpec(key, "AES");
     }
 
-    public static String encrypt(String data, String userKey) {
+    public static String encrypt(String data, String userKey) {  
         try {
             SecretKeySpec secretKey = getKey(userKey);
             Cipher cipher = Cipher.getInstance("AES");

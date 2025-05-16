@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
         String hashed = passwordEncryptionService.hashPassword(user.getPasswordHash(), salt, pepper);
 
         user.setSalt(salt);
-        user.setPepper(pepper); // <- falls User das Feld hat
+        user.setPepper(pepper);
         user.setPasswordHash(hashed);
 
         return userRepository.save(user);

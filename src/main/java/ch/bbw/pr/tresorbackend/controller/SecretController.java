@@ -138,11 +138,10 @@ public class SecretController {
       }
 
       String contentString = newSecret.getContent().toString();
-      String encrypted = secretService.encryptContent(user.getId(), contentString);
+      String encrypted = secretService.encryptContent(user.getId(), contentString); // secret als klartext geschickt
 
-
-      Secret updatedSecret = new Secret(secretId, user.getId(), newSecret.getTitle(), encrypted);
-      secretService.updateSecret(updatedSecret);
+      Secret updatedSecret = new Secret(secretId, user.getId(), newSecret.getTitle(), encrypted); // neues secret-objekt wird mit verschlüsseltem inhalt erstellt
+      secretService.updateSecret(updatedSecret); // db speichern
 
       JsonObject obj = new JsonObject();
       obj.addProperty("answer", "Secret updated");
