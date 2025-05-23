@@ -72,11 +72,11 @@ public class SecretServiceImpl implements SecretService {
 
    public String encryptContent(Long userId, String content) {  // verschlüsseln
       User user = userRepository.findById(userId).orElseThrow();
-      return SecretEncryptionUtil.encrypt(content, user.getPasswordHash());
+      return SecretEncryptionUtil.encrypt(content, user.getPassword());
    }
 
    public String decryptContent(Long userId, String encrypted) { // entschlüsseln
       User user = userRepository.findById(userId).orElseThrow();
-      return SecretEncryptionUtil.decrypt(encrypted, user.getPasswordHash());
+      return SecretEncryptionUtil.decrypt(encrypted, user.getPassword());
    }
 }

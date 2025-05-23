@@ -23,13 +23,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         String salt = passwordEncryptionService.generateSalt();
-        String pepper = passwordEncryptionService.generatePepper();
-        String hashed = passwordEncryptionService.hashPassword(user.getPasswordHash(), salt, pepper);
-
+        String hashed = passwordEncryptionService.hashPassword(user.getPassword(), salt);
         user.setSalt(salt);
-        user.setPepper(pepper);
-        user.setPasswordHash(hashed);
-
+        user.setPassword(hashed);
         return userRepository.save(user);
     }
 
@@ -51,7 +47,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         User existingUser = userRepository.findById(user.getId()).orElse(null);
-        if (existingUser == null) return null;
+        if (existingUser == null)
+            return null;
 
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
@@ -68,10 +65,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean login(String email, String password) {
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) return false;
+        if (userOpt.isEmpty())
+            return false;
 
         User user = userOpt.get();
-        String hashed = passwordEncryptionService.hashPassword(password, user.getSalt(), user.getPepper());
-        return hashed.equals(user.getPasswordHash());
+        String hashed = passwordEncryptionService.hashPassword(password, user.getSalt());
+        return hashed.equals(user.getPassword());
     }
 }

@@ -9,4 +9,4 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: tresordb
     ports:
-      - "3307:3306"
+      - "3306:3306"

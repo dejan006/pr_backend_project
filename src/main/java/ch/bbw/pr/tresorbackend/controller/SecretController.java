@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * SecretController – AES-basiert mit individuellem User-Schlüssel
+ * 
  * @author Peter Rutschmann
  */
 @RestController
@@ -33,7 +34,7 @@ public class SecretController {
    private UserService userService;
 
    // create secret REST API
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @PostMapping
    public ResponseEntity<String> createSecret(@Valid @RequestBody NewSecret newSecret, BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
@@ -60,7 +61,7 @@ public class SecretController {
    }
 
    // Get secrets by userId
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @PostMapping("/byuserid")
    public ResponseEntity<List<Secret>> getSecretsByUserId(@RequestBody EncryptCredentials credentials) {
       List<Secret> secrets = secretService.getSecretsByUserId(credentials.getUserId());
@@ -78,11 +79,18 @@ public class SecretController {
    }
 
    // Get secrets by email
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @PostMapping("/byemail")
    public ResponseEntity<List<Secret>> getSecretsByEmail(@RequestBody EncryptCredentials credentials) {
       User user = userService.findByEmail(credentials.getEmail());
+
+      if (user == null) {
+         System.out.println("Kein Benutzer gefunden mit Email: " + credentials.getEmail());
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      }
+
       List<Secret> secrets = secretService.getSecretsByUserId(user.getId());
+
       if (secrets.isEmpty()) {
          return ResponseEntity.notFound().build();
       }
@@ -97,7 +105,7 @@ public class SecretController {
    }
 
    // Get all secrets
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @GetMapping
    public ResponseEntity<List<Secret>> getAllSecrets() {
       List<Secret> secrets = secretService.getAllSecrets();
@@ -105,7 +113,7 @@ public class SecretController {
    }
 
    // Update secret
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @PutMapping("{id}")
    public ResponseEntity<String> updateSecret(
          @PathVariable("id") Long secretId,
@@ -140,7 +148,10 @@ public class SecretController {
       String contentString = newSecret.getContent().toString();
       String encrypted = secretService.encryptContent(user.getId(), contentString); // secret als klartext geschickt
 
-      Secret updatedSecret = new Secret(secretId, user.getId(), newSecret.getTitle(), encrypted); // neues secret-objekt wird mit verschlüsseltem inhalt erstellt
+      Secret updatedSecret = new Secret(secretId, user.getId(), newSecret.getTitle(), encrypted); // neues secret-objekt
+                                                                                                  // wird mit
+                                                                                                  // verschlüsseltem
+                                                                                                  // inhalt erstellt
       secretService.updateSecret(updatedSecret); // db speichern
 
       JsonObject obj = new JsonObject();
@@ -149,7 +160,7 @@ public class SecretController {
    }
 
    // Delete secret
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @DeleteMapping("{id}")
    public ResponseEntity<String> deleteSecret(@PathVariable("id") Long secretId) {
       secretService.deleteSecret(secretId);

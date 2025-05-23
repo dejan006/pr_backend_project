@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * UserController
+ * 
  * @author Peter Rutschmann
  */
 @RestController
@@ -39,7 +40,7 @@ public class UserController {
 
    @Autowired
    public UserController(ConfigProperties configProperties, UserService userService,
-                         PasswordEncryptionService passwordService) {
+         PasswordEncryptionService passwordService) {
       this.configProperties = configProperties;
       System.out.println("UserController.UserController: cross origin: " + configProperties.getOrigin());
       // Logging in the constructor
@@ -50,15 +51,16 @@ public class UserController {
    }
 
    // build create User REST API
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @PostMapping
-   public ResponseEntity<String> createUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult) {
-      //captcha
-      //todo ergänzen
+   public ResponseEntity<String> createUser(@Valid @RequestBody RegisterUser registerUser,
+         BindingResult bindingResult) {
+      // captcha
+      // todo ergänzen
 
       System.out.println("UserController.createUser: captcha passed.");
 
-      //input validation
+      // input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
@@ -76,23 +78,21 @@ public class UserController {
       }
       System.out.println("UserController.createUser: input validation passed");
 
-      //password validation
-      //todo ergänzen
+      // password validation
+      // todo ergänzen
       System.out.println("UserController.createUser, password validation passed");
 
-      //transform registerUser to user
       String salt = passwordService.generateSalt();
-      String pepper = passwordService.generatePepper();
-      String hashedPassword = passwordService.hashPassword(registerUser.getPassword(), salt, pepper);
+      String hashedPassword = passwordService.hashPassword(registerUser.getPassword(), salt);
 
       User user = new User(
             null,
             registerUser.getFirstName(),
             registerUser.getLastName(),
             registerUser.getEmail(),
-            hashedPassword
-      );
+            hashedPassword);
       user.setSalt(salt);
+      userService.createUser(user);
 
       System.out.println("UserController.createUser, user saved in db");
       JsonObject obj = new JsonObject();
@@ -104,7 +104,7 @@ public class UserController {
 
    // build get user by id REST API
    // http://localhost:8080/api/users/1
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @GetMapping("{id}")
    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
       User user = userService.getUserById(userId);
@@ -113,7 +113,7 @@ public class UserController {
 
    // Build Get All Users REST API
    // http://localhost:8080/api/users
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @GetMapping
    public ResponseEntity<List<User>> getAllUsers() {
       List<User> users = userService.getAllUsers();
@@ -122,30 +122,29 @@ public class UserController {
 
    // Build Update User REST API
    // http://localhost:8080/api/users/1
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @PutMapping("{id}")
    public ResponseEntity<User> updateUser(@PathVariable("id") Long userId,
-                                          @RequestBody User user) {
+         @RequestBody User user) {
       user.setId(userId);
       User updatedUser = userService.updateUser(user);
       return new ResponseEntity<>(updatedUser, HttpStatus.OK);
    }
 
    // Build Delete User REST API
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @DeleteMapping("{id}")
    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) {
       userService.deleteUser(userId);
       return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
    }
 
-
    // get user id by email
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @CrossOrigin(origins = "http://localhost:3000")
    @PostMapping("/byemail")
    public ResponseEntity<String> getUserIdByEmail(@RequestBody EmailAdress email, BindingResult bindingResult) {
       System.out.println("UserController.getUserIdByEmail: " + email);
-      //input validation
+      // input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())

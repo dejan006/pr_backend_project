@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * User
- * @author Peter Rutschmann
+ * User Entity
  */
 @Getter
 @Setter
@@ -17,34 +16,31 @@ import lombok.Setter;
 @Entity
 @Table(name = "user")
 public class User {
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column(nullable = false, name="first_name")
+   @Column(nullable = false, name = "first_name")
    private String firstName;
 
-   @Column(nullable = false, name="last_name")
+   @Column(nullable = false, name = "last_name")
    private String lastName;
 
    @Column(nullable = false, unique = true)
    private String email;
 
    @Column(nullable = false)
-   private String password;
+   private String password; // hashed password
 
-   private String passwordHash;
-
+   @Column(nullable = false)
    private String salt;
 
-   private String pepper;
-
-   public User(Long id, String firstName, String lastName, String email, String passwordHash) { 
+   public User(Long id, String firstName, String lastName, String email, String password) {
       this.id = id;
       this.firstName = firstName;
       this.lastName = lastName;
       this.email = email;
-      this.passwordHash = passwordHash;
+      this.password = password;
    }
-
 }
